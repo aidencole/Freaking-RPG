@@ -94,6 +94,28 @@ The best place to start is the **boss combat framework** — telegraphed attacks
 7. At **60% HP** the boss enters an enraged phase with a faster, nastier pattern.
 8. Clean up with `/frpg boss stop`.
 
+### The Astronomer (work in progress)
+
+Celestial guardian encounter — arena-as-boss with rotating rings and gravity shifts.
+
+```
+/frpg boss spawn astronomer
+```
+
+Fight in a **flat open area** (needs ~40 block radius). Phases:
+
+| Phase | HP | What changes |
+|-------|-----|----------------|
+| Equilibrium | 100–80% | Greatsword, shockwave, constellation lasers |
+| Gravity Rotation | 80–60% | Sideways/inverted gravity telegraphs; solar beam + orbital pull |
+| Fractured Floor | 60–35% | Three rings spin independently; eclipse + planetfall |
+| Celestial Orrery | 35–12% | Sky constellation attacks; telescope arena lights up |
+| Unbound Cosmos | 12–0% | Random gravity every 15s; all attacks |
+
+**Core systems:** `RingRotationEngine` (3 concentric rings), `GravityField` (Inception-style pulls), `ObservatoryArena` (telescope + gears), 8 bespoke attacks.
+
+Dev arena is **36 blocks** radius (production target ~120 blocks / 400 ft). ModelEngine body still TBD — currently an Illusioner placeholder at 2.2× scale.
+
 ### How the framework works
 
 ```

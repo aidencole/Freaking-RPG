@@ -1,6 +1,7 @@
 package dev.freakingrpg.boss;
 
 import dev.freakingrpg.FreakingRpgPlugin;
+import dev.freakingrpg.boss.encounter.BossEncounter;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import java.util.Random;
 import java.util.UUID;
@@ -27,6 +28,7 @@ public final class BossInstance {
     private BossAttack currentAttack;
     private int stateTicksRemaining;
     private ScheduledTask tickTask;
+    private BossEncounter encounter;
 
     public BossInstance(
         FreakingRpgPlugin plugin,
@@ -78,12 +80,27 @@ public final class BossInstance {
         return bossBar;
     }
 
+    public int phaseIndex() {
+        return phaseIndex;
+    }
+
+    public void attachEncounter(BossEncounter encounter) {
+        this.encounter = encounter;
+    }
+
+    public BossEncounter encounter() {
+        return encounter;
+    }
+
     public boolean isVulnerable() {
         return state == BossFightState.RECOVER;
     }
 
     public void start() {
         bossBar.show(context.playersInArena());
+        if (encounter != null) {
+            encounter.onStart(context);
+        }
         tickTask = entity.getScheduler().runAtFixedRate(plugin, task -> tick(), null, 1L, 1L);
     }
 
@@ -95,6 +112,10 @@ public final class BossInstance {
         if (currentAttack != null) {
             currentAttack.onCancel(context);
             currentAttack = null;
+        }
+        if (encounter != null) {
+            encounter.onStop(context);
+            encounter = null;
         }
         bossBar.hide(context.playersInArena());
     }
@@ -115,6 +136,10 @@ public final class BossInstance {
             case RECOVER -> tickRecover();
             case PHASE_SHIFT -> tickPhaseShift();
             case DEFEATED -> stop();
+        }
+
+        if (encounter != null) {
+            encounter.onTick(context);
         }
     }
 
@@ -164,6 +189,9 @@ public final class BossInstance {
             bossBar.setTitle(phase.title());
             bossBar.setColor(phase.barColor());
             entity.getWorld().playSound(entity.getLocation(), org.bukkit.Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 0.8f);
+            if (encounter != null) {
+                encounter.onPhaseEnter(context, phaseIndex);
+            }
             beginTelegraph(selectNextAttack());
         }
     }

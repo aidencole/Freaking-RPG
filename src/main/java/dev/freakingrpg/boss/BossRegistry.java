@@ -1,5 +1,10 @@
 package dev.freakingrpg.boss;
 
+import dev.freakingrpg.boss.astronomer.AstronomerBoss;
+import dev.freakingrpg.boss.astronomer.AstronomerEncounter;
+import dev.freakingrpg.boss.astronomer.GravityField;
+import dev.freakingrpg.boss.astronomer.ObservatoryArena;
+import dev.freakingrpg.boss.astronomer.RingRotationEngine;
 import dev.freakingrpg.boss.builtin.ColossusDrillBoss;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -12,6 +17,7 @@ public final class BossRegistry {
 
     public BossRegistry() {
         register(ColossusDrillBoss.create());
+        register(AstronomerBoss.create());
     }
 
     public void register(BossDefinition definition) {

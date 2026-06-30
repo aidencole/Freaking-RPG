@@ -1,6 +1,11 @@
 package dev.freakingrpg.boss;
 
 import dev.freakingrpg.FreakingRpgPlugin;
+import dev.freakingrpg.boss.astronomer.AstronomerBoss;
+import dev.freakingrpg.boss.astronomer.AstronomerEncounter;
+import dev.freakingrpg.boss.astronomer.GravityField;
+import dev.freakingrpg.boss.astronomer.ObservatoryArena;
+import dev.freakingrpg.boss.astronomer.RingRotationEngine;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -55,8 +60,21 @@ public final class BossManager {
         entity.getPersistentDataContainer().set(keys.instanceId(), PersistentDataType.STRING, instance.id().toString());
         instancesById.put(instance.id(), instance);
         instanceIdByEntity.put(entity.getUniqueId(), instance.id());
+
+        if (AstronomerBoss.ID.equals(definition.id())) {
+            attachAstronomerEncounter(instance, location, definition.arenaRadius());
+        }
+
         instance.start();
         return instance;
+    }
+
+    private void attachAstronomerEncounter(BossInstance instance, Location center, double arenaRadius) {
+        ObservatoryArena arena = ObservatoryArena.build(plugin, center, arenaRadius);
+        RingRotationEngine rings = new RingRotationEngine(plugin, center, arenaRadius);
+        rings.buildVisuals();
+        GravityField gravity = new GravityField(plugin);
+        instance.attachEncounter(new AstronomerEncounter(plugin, arena, rings, gravity));
     }
 
     private void configureEntity(LivingEntity entity, BossDefinition definition) {
@@ -69,6 +87,9 @@ public final class BossManager {
         entity.setHealth(definition.maxHealth());
         entity.getAttribute(Attribute.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         entity.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.0);
+        if (AstronomerBoss.ID.equals(definition.id()) && entity.getAttribute(Attribute.SCALE) != null) {
+            entity.getAttribute(Attribute.SCALE).setBaseValue(2.2);
+        }
     }
 
     public Optional<BossInstance> findByEntity(UUID entityId) {

@@ -76,12 +76,44 @@ First run downloads Paper; later runs reuse the cached server in `run/`.
 2. Copy the built JAR into the server's `plugins/` folder.
 3. Start the server and run `/frpg help`.
 
+## Test your first boss
+
+The best place to start is the **boss combat framework** — telegraphed attacks, semi-predictable patterns, phase shifts, and punish windows during recovery (Mario / dragon-boss style).
+
+1. Start the dev server: `./gradlew runServer` (accept EULA in `run/eula.txt` if needed).
+2. Join the server, make yourself op: `/op YourName`
+3. Spawn the demo boss at your feet:
+
+```
+/frpg boss spawn colossus_drill
+```
+
+4. **Watch the boss bar title** — it tells you which attack is telegraphing.
+5. **Dodge the ground tells** — red rings, flame lanes, spirals.
+6. **Punish during recovery** — boss takes bonus damage after each attack finishes.
+7. At **60% HP** the boss enters an enraged phase with a faster, nastier pattern.
+8. Clean up with `/frpg boss stop`.
+
+### How the framework works
+
+```
+src/main/java/dev/freakingrpg/boss/
+  BossInstance.java         # Fight state machine (intro -> telegraph -> execute -> recover)
+  BossPatternEngine.java    # Weighted attack rotation (avoids immediate repeats)
+  BossBarController.java    # Telegraph callouts on the boss bar
+  attacks/                  # Individual attack scripts
+  builtin/ColossusDrillBoss.java   # First demo boss definition
+```
+
+**Next steps for AAA visuals:** plug in [ModelEngine](https://github.com/Ticxo/Model-Engine) for custom models/animations on top of this logic layer. MythicMobs can be added later for content authoring; Freaking RPG owns the fight choreography.
+
 ## Project layout
 
 ```
 src/main/java/dev/freakingrpg/
   FreakingRpgPlugin.java    # Plugin entry point
-  core/                     # Core systems (commands, services, etc.)
+  core/                     # Commands
+  boss/                     # Boss combat framework
 src/main/resources/
   plugin.yml
   config.yml

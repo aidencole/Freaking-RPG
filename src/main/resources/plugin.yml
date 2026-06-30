@@ -8,13 +8,16 @@ authors: [Freaking RPG Team]
 commands:
   frpg:
     description: Main command for Freaking RPG.
-    usage: /frpg [help|reload]
+    usage: /frpg [help|boss|reload]
     permission: freakingrpg.command.frpg
 
 permissions:
   freakingrpg.command.frpg:
     description: Allows use of /frpg.
     default: true
+  freakingrpg.boss:
+    description: Allows spawning and stopping test bosses.
+    default: op
   freakingrpg.admin:
     description: Allows admin actions like reload.
     default: op

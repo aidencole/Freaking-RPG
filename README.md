@@ -11,15 +11,29 @@ Same layout as Breach: the project lives in `Projects\Freaking-RPG` on your PC.
 This repo is **private**, so the `irm https://raw.githubusercontent.com/...` one-liner from Breach returns 404. Clone first, then run the setup script:
 
 ```powershell
-gh repo clone aidencole/Freaking-RPG "$env:USERPROFILE\Projects\Freaking-RPG"
-& "$env:USERPROFILE\Projects\Freaking-RPG\scripts\setup-dev.ps1"
+$project = "$env:USERPROFILE\Projects\Freaking-RPG"
+if (-not (Test-Path "$project\.git")) {
+    gh repo clone aidencole/Freaking-RPG $project
+}
+& "$project\scripts\setup-dev.ps1"
 ```
 
 No `gh`? Use Git instead (you must be logged into GitHub on this PC):
 
 ```powershell
-git clone https://github.com/aidencole/Freaking-RPG.git "$env:USERPROFILE\Projects\Freaking-RPG"
-& "$env:USERPROFILE\Projects\Freaking-RPG\scripts\setup-dev.ps1"
+$project = "$env:USERPROFILE\Projects\Freaking-RPG"
+if (-not (Test-Path "$project\.git")) {
+    git clone https://github.com/aidencole/Freaking-RPG.git $project
+}
+& "$project\scripts\setup-dev.ps1"
+```
+
+Already cloned? Just run the setup script from the repo:
+
+```powershell
+cd $env:USERPROFILE\Projects\Freaking-RPG
+git pull origin main
+.\scripts\setup-dev.ps1
 ```
 
 The script installs JDK 25 if needed, updates the repo, downloads Gradle dependencies, and prints IntelliJ open steps.

@@ -11,7 +11,14 @@ if ($PSVersionTable.PSVersion.Major -ge 7) {
 }
 
 $RepoUrl   = "https://github.com/aidencole/Freaking-RPG.git"
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoRoot  = Split-Path -Parent $ScriptDir
 $ClonePath = Join-Path $env:USERPROFILE "Projects\Freaking-RPG"
+
+# If this script was run from an existing checkout, use that folder.
+if ((Test-Path (Join-Path $RepoRoot ".git")) -and (Test-Path (Join-Path $RepoRoot "build.gradle.kts"))) {
+    $ClonePath = $RepoRoot
+}
 $GitName   = "aidencole"
 $GitEmail  = "aidencole@users.noreply.github.com"
 
@@ -92,11 +99,17 @@ if (-not (git config --global user.email 2>$null)) {
 Test-GitHubLogin
 
 if (Test-Path $ClonePath) {
+    if (-not (Test-Path (Join-Path $ClonePath ".git"))) {
+        Write-Host "ERROR: $ClonePath exists but is not a git repo." -ForegroundColor Red
+        Write-Host "Remove or rename that folder, then run this script again." -ForegroundColor Yellow
+        exit 1
+    }
+
     Write-Host "`nUpdating existing repo at $ClonePath" -ForegroundColor Green
     Set-Location $ClonePath
     git pull origin main
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "git pull failed — if this is an auth issue, run: gh auth login" -ForegroundColor Yellow
+        Write-Host "git pull failed - if this is an auth issue, run: gh auth login" -ForegroundColor Yellow
     }
 } else {
     Write-Host "`nCloning Freaking RPG to $ClonePath" -ForegroundColor Green
@@ -127,20 +140,18 @@ if (-not $ideaInstalled) {
 }
 
 Write-Host "`n=== Setup complete ===" -ForegroundColor Green
-Write-Host @"
-
-Next steps:
-  1. Open IntelliJ IDEA
-  2. File -> Open -> $ClonePath
-  3. Trust project, wait for Gradle sync
-  4. File -> Project Structure -> Project SDK -> JDK 25
-  5. Run 'runServer' from the Gradle tool window (or top-right run config)
-
-Or without IntelliJ:
-  cd $ClonePath
-  .\gradlew.bat runServer
-
-GitHub push/pull on this PC:
-  gh auth login
-
-"@
+Write-Host ""
+Write-Host "Next steps:"
+Write-Host "  1. Open IntelliJ IDEA"
+Write-Host "  2. File -> Open -> $ClonePath"
+Write-Host "  3. Trust project, wait for Gradle sync"
+Write-Host "  4. File -> Project Structure -> Project SDK -> JDK 25"
+Write-Host "  5. Run runServer from the Gradle tool window (or top-right run config)"
+Write-Host ""
+Write-Host "Or without IntelliJ:"
+Write-Host "  cd $ClonePath"
+Write-Host "  .\gradlew.bat runServer"
+Write-Host ""
+Write-Host "GitHub push/pull on this PC:"
+Write-Host "  gh auth login"
+Write-Host ""

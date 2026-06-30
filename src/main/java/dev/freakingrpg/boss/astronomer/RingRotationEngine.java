@@ -1,14 +1,11 @@
 package dev.freakingrpg.boss.astronomer;
 
 import dev.freakingrpg.FreakingRpgPlugin;
-import dev.freakingrpg.vfx.DisplayTransforms;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Player;
 
 public final class RingRotationEngine {
@@ -16,7 +13,6 @@ public final class RingRotationEngine {
     private final FreakingRpgPlugin plugin;
     private final Location center;
     private final List<ArenaRing> rings = new ArrayList<>();
-    private final List<BlockDisplay> ringMarkers = new ArrayList<>();
     private boolean enabled;
     private double rotationBoost;
 
@@ -34,28 +30,7 @@ public final class RingRotationEngine {
     }
 
     public void buildVisuals() {
-        World world = center.getWorld();
-        if (world == null) {
-            return;
-        }
-
-        for (ArenaRing ring : rings) {
-            double markerRadius = (ring.innerRadius() + ring.outerRadius()) / 2.0;
-            for (int i = 0; i < 8; i++) {
-                double angle = (Math.PI * 2 * i) / 8;
-                Location spawn = center.clone().add(
-                    Math.cos(angle) * markerRadius,
-                    0.2,
-                    Math.sin(angle) * markerRadius
-                );
-                BlockDisplay marker = world.spawn(spawn, BlockDisplay.class, display -> {
-                    display.setBlock(Material.QUARTZ_BLOCK.createBlockData());
-                    display.setTransformation(DisplayTransforms.groundCrack(0.7f));
-                    display.setPersistent(false);
-                });
-                ringMarkers.add(marker);
-            }
-        }
+        // Ring boundaries are shown on the real floor blocks + particle trails only.
     }
 
     public void setEnabled(boolean enabled) {
@@ -80,7 +55,6 @@ public final class RingRotationEngine {
         }
 
         rotatePlayers(players);
-        updateMarkers();
     }
 
     private void rotatePlayers(List<Player> players) {
@@ -132,12 +106,13 @@ public final class RingRotationEngine {
         }
 
         double radius = (ring.innerRadius() + ring.outerRadius()) / 2.0;
-        for (int i = 0; i < 6; i++) {
-            double angle = ring.angleRadians() + (Math.PI * 2 * i) / 6;
+        double floorY = center.getY() - 1.0;
+        for (int i = 0; i < 12; i++) {
+            double angle = ring.angleRadians() + (Math.PI * 2 * i) / 12;
             world.spawnParticle(
                 Particle.END_ROD,
                 center.getX() + Math.cos(angle) * radius,
-                center.getY() + 0.3,
+                floorY + 1.05,
                 center.getZ() + Math.sin(angle) * radius,
                 1,
                 0,
@@ -148,34 +123,6 @@ public final class RingRotationEngine {
         }
     }
 
-    private void updateMarkers() {
-        int markerIndex = 0;
-        for (ArenaRing ring : rings) {
-            double markerRadius = (ring.innerRadius() + ring.outerRadius()) / 2.0;
-            for (int i = 0; i < 8; i++) {
-                if (markerIndex >= ringMarkers.size()) {
-                    return;
-                }
-                BlockDisplay marker = ringMarkers.get(markerIndex++);
-                if (!marker.isValid()) {
-                    continue;
-                }
-                double angle = ring.angleRadians() + (Math.PI * 2 * i) / 8;
-                marker.teleport(center.clone().add(
-                    Math.cos(angle) * markerRadius,
-                    0.2 + Math.sin(ring.tiltRadians()) * 0.5,
-                    Math.sin(angle) * markerRadius
-                ));
-            }
-        }
-    }
-
     public void shutdown() {
-        for (BlockDisplay marker : ringMarkers) {
-            if (marker.isValid()) {
-                marker.remove();
-            }
-        }
-        ringMarkers.clear();
     }
 }

@@ -102,6 +102,8 @@ Celestial guardian encounter — arena-as-boss with rotating rings and gravity s
 /frpg boss spawn astronomer
 ```
 
+After `git pull`, always **`.\gradlew.bat clean build runServer`** so `run/plugins` gets the latest JAR. On enable the console should log `astronomer arena + HP clamp`. If you see `Health value (2500.0)`, the old plugin is still loaded — delete `run\plugins\FreakingRPG-0.1.0-SNAPSHOT.jar` and rebuild.
+
 This **teleports you** to the void world `frpg_observatory` and builds a circular three-ring platform (quartz / deepslate / polished deepslate) with telescope props. You do **not** need a flat overworld spot — spawning *is* entering the arena.
 
 If spawn fails, check the server console; HP is capped at **1024** (Minecraft limit).

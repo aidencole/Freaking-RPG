@@ -1,18 +1,14 @@
 package dev.freakingrpg.boss.astronomer;
 
 import dev.freakingrpg.FreakingRpgPlugin;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.BlockDisplay;
 
 public final class ObservatoryArena {
 
     private final Location center;
     private final double radius;
-    private final List<BlockDisplay> scenery = new ArrayList<>();
 
     private ObservatoryArena(Location center, double radius) {
         this.center = center.clone();
@@ -64,11 +60,5 @@ public final class ObservatoryArena {
     }
 
     public void shutdown() {
-        for (BlockDisplay display : scenery) {
-            if (display.isValid()) {
-                display.remove();
-            }
-        }
-        scenery.clear();
     }
 }

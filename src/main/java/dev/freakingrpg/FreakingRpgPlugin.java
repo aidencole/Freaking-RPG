@@ -41,7 +41,7 @@ public final class FreakingRpgPlugin extends JavaPlugin {
             getLogger().severe("Command /frpg is missing from plugin.yml.");
         }
 
-        getLogger().info("Freaking RPG enabled (astronomer arena + HP clamp). Version: " + getDescription().getVersion());
+        getLogger().info("Freaking RPG enabled (observatory chunk sync + arena floor). Version: " + getDescription().getVersion());
     }
 
     @Override

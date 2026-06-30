@@ -45,6 +45,7 @@ public final class ObservatoryPlatformBuilder {
         }
 
         buildTelescopeBlocks(placed, world, centerX, floorY + 1, centerZ, radius);
+        ArenaChunkLoader.refreshArena(world, floorCenter, radius + 4);
         return placed;
     }
 
@@ -79,7 +80,7 @@ public final class ObservatoryPlatformBuilder {
         blocks.clear();
     }
 
-    private static Material ringMaterial(double distance, double radius) {
+    static Material ringMaterial(double distance, double radius) {
         double ratio = distance / radius;
         if (ratio < 0.33) {
             return Material.POLISHED_DEEPSLATE;
@@ -90,7 +91,7 @@ public final class ObservatoryPlatformBuilder {
         return Material.QUARTZ_BLOCK;
     }
 
-    private static boolean isRingEdge(double distance, double radius) {
+    static boolean isRingEdge(double distance, double radius) {
         double outer = radius * 0.66;
         double inner = radius * 0.33;
         return Math.abs(distance - outer) < 0.9 || Math.abs(distance - inner) < 0.9;

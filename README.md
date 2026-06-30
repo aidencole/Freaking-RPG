@@ -97,15 +97,14 @@ The best place to start is the **boss combat framework** — telegraphed attacks
 ### How the framework works
 
 ```
-src/main/java/dev/freakingrpg/boss/
-  BossInstance.java         # Fight state machine (intro -> telegraph -> execute -> recover)
-  BossPatternEngine.java    # Weighted attack rotation (avoids immediate repeats)
-  BossBarController.java    # Telegraph callouts on the boss bar
-  attacks/                  # Individual attack scripts
-  builtin/ColossusDrillBoss.java   # First demo boss definition
+src/main/java/dev/freakingrpg/boss/       # Fight choreography (patterns, phases, telegraphs)
+src/main/java/dev/freakingrpg/vfx/        # BlockDisplay debris, shockwaves, ground cracks
+src/main/java/dev/freakingrpg/presentation/  # ModelEngine hooks for models + emotes (when installed)
 ```
 
-**Next steps for AAA visuals:** plug in [ModelEngine](https://github.com/Ticxo/Model-Engine) for custom models/animations on top of this logic layer. MythicMobs can be added later for content authoring; Freaking RPG owns the fight choreography.
+**AAA stack (target):** Freaking RPG = brain · ModelEngine = boss/player body · BlockDisplay = world destruction/VFX · resource pack = item visuals.
+
+Shockwave and leap slam now spawn **rock BlockDisplays** that arc outward (not just particles). Install **ModelEngine** on the dev server when you have Blockbench models ready.
 
 ## Project layout
 

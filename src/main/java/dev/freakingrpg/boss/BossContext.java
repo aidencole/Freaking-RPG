@@ -1,5 +1,6 @@
 package dev.freakingrpg.boss;
 
+import dev.freakingrpg.FreakingRpgPlugin;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Location;
@@ -58,5 +59,9 @@ public final class BossContext {
 
     public UUID instanceId() {
         return instance.id();
+    }
+
+    public FreakingRpgPlugin plugin() {
+        return instance.plugin();
     }
 }

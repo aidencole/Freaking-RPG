@@ -58,6 +58,10 @@ public final class BossInstance {
         return definition;
     }
 
+    public FreakingRpgPlugin plugin() {
+        return plugin;
+    }
+
     public LivingEntity entity() {
         return entity;
     }

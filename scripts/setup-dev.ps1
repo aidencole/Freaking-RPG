@@ -1,7 +1,7 @@
 # Freaking RPG — one-shot dev environment setup for Windows
-# Run in PowerShell:
-#   irm https://raw.githubusercontent.com/aidencole/Freaking-RPG/main/scripts/setup-dev.ps1 | iex
-# Or from a cloned repo:
+# This repo is private, so the Breach-style `irm ... | iex` one-liner does not work.
+#
+# Run in PowerShell (after cloning, or use the one-liner in README.md):
 #   .\scripts\setup-dev.ps1
 
 # Native commands like `java -version` write to stderr; don't treat that as fatal.

@@ -8,11 +8,21 @@ Targets **Minecraft 26.2** on **Paper** with **Java 25**.
 
 Same layout as Breach: the project lives in `Projects\Freaking-RPG` on your PC.
 
+This repo is **private**, so the `irm https://raw.githubusercontent.com/...` one-liner from Breach returns 404. Clone first, then run the setup script:
+
 ```powershell
-irm https://raw.githubusercontent.com/aidencole/Freaking-RPG/main/scripts/setup-dev.ps1 | iex
+gh repo clone aidencole/Freaking-RPG "$env:USERPROFILE\Projects\Freaking-RPG"
+& "$env:USERPROFILE\Projects\Freaking-RPG\scripts\setup-dev.ps1"
 ```
 
-That script installs JDK 25 if needed, clones or updates the repo to `%USERPROFILE%\Projects\Freaking-RPG`, downloads Gradle dependencies, and prints IntelliJ open steps.
+No `gh`? Use Git instead (you must be logged into GitHub on this PC):
+
+```powershell
+git clone https://github.com/aidencole/Freaking-RPG.git "$env:USERPROFILE\Projects\Freaking-RPG"
+& "$env:USERPROFILE\Projects\Freaking-RPG\scripts\setup-dev.ps1"
+```
+
+The script installs JDK 25 if needed, updates the repo, downloads Gradle dependencies, and prints IntelliJ open steps.
 
 You do **not** need to create an IntelliJ project manually — open the cloned folder and Gradle import handles the rest.
 

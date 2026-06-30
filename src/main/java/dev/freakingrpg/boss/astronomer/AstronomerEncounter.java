@@ -97,6 +97,7 @@ public final class AstronomerEncounter implements BossEncounter {
     public void onStop(BossContext context) {
         rings.shutdown();
         arena.shutdown();
+        plugin.astronomerArenaService().clearPlatform();
         gravity.setImmediate(GravityAlignment.NORMAL);
     }
 

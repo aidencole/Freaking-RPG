@@ -2,7 +2,6 @@ package dev.freakingrpg.core;
 
 import dev.freakingrpg.FreakingRpgPlugin;
 import dev.freakingrpg.boss.BossDefinition;
-import dev.freakingrpg.boss.BossInstance;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +41,7 @@ public final class FrpgCommand implements CommandExecutor, TabCompleter {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(plugin.brandedMessage("Commands:"));
         sender.sendMessage(plugin.brandedMessage("/frpg boss list"));
-        sender.sendMessage(plugin.brandedMessage("/frpg boss spawn <id>"));
+        sender.sendMessage(plugin.brandedMessage("/frpg boss spawn <id>  (astronomer teleports you to frpg_observatory)"));
         sender.sendMessage(plugin.brandedMessage("/frpg boss stop"));
         sender.sendMessage(plugin.brandedMessage("/frpg reload"));
     }
@@ -101,15 +100,14 @@ public final class FrpgCommand implements CommandExecutor, TabCompleter {
         }
 
         String bossId = args[2].toLowerCase(Locale.ROOT);
-        var spawned = plugin.bossManager().spawn(bossId, player.getLocation());
+        var spawned = plugin.bossManager().spawn(bossId, player.getLocation(), player);
         if (spawned.isEmpty()) {
-            sender.sendMessage(plugin.brandedMessage("Unknown boss id: " + bossId));
+            sender.sendMessage(plugin.brandedMessage("Unknown boss id or spawn failed: " + bossId));
             return true;
         }
 
-        BossInstance instance = spawned.get();
         sender.sendMessage(plugin.brandedMessage(
-            "Spawned " + bossId + ". Watch the boss bar for telegraphs, dodge, punish during recovery."
+            "Spawned " + bossId + ". Watch the boss bar for telegraphs. Punish during recovery windows."
         ));
         return true;
     }

@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.BlockDisplay;
 
 public final class ObservatoryArena {
@@ -15,6 +16,7 @@ public final class ObservatoryArena {
     private final Location center;
     private final double radius;
     private final List<BlockDisplay> scenery = new ArrayList<>();
+    private final List<Block> platformBlocks = new ArrayList<>();
 
     private ObservatoryArena(Location center, double radius) {
         this.center = center.clone();
@@ -23,6 +25,7 @@ public final class ObservatoryArena {
 
     public static ObservatoryArena build(FreakingRpgPlugin plugin, Location center, double radius) {
         ObservatoryArena arena = new ObservatoryArena(center, radius);
+        arena.buildPlatform();
         arena.buildScenery();
         return arena;
     }
@@ -33,6 +36,12 @@ public final class ObservatoryArena {
 
     public double radius() {
         return radius;
+    }
+
+    private void buildPlatform() {
+        Location floor = center.clone();
+        floor.setY(Math.floor(center.getY()));
+        platformBlocks.addAll(ObservatoryPlatformBuilder.build(floor, radius));
     }
 
     private void buildScenery() {
@@ -61,7 +70,7 @@ public final class ObservatoryArena {
     private void buildFloorGears(World world) {
         for (int gear = 0; gear < 4; gear++) {
             double angle = (Math.PI / 2) * gear;
-            Location spawn = center.clone().add(Math.cos(angle) * (radius * 0.35), -0.5, Math.sin(angle) * (radius * 0.35));
+            Location spawn = center.clone().add(Math.cos(angle) * (radius * 0.35), 0.5, Math.sin(angle) * (radius * 0.35));
             BlockDisplay floorGear = world.spawn(spawn, BlockDisplay.class, display -> {
                 display.setBlock(Material.DEEPSLATE_BRICKS.createBlockData());
                 display.setTransformation(DisplayTransforms.groundCrack(2.2f));
@@ -99,5 +108,6 @@ public final class ObservatoryArena {
             }
         }
         scenery.clear();
+        ObservatoryPlatformBuilder.clear(platformBlocks);
     }
 }

@@ -43,7 +43,7 @@ public final class AstronomerBoss {
             ID,
             Component.text("The Astronomer", NamedTextColor.DARK_AQUA, TextDecoration.BOLD),
             EntityType.ILLUSIONER,
-            2500.0,
+            1000.0,
             36.0,
             80,
             List.of(

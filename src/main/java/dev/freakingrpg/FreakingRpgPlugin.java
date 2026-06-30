@@ -6,6 +6,7 @@ import dev.freakingrpg.boss.BossManager;
 import dev.freakingrpg.boss.BossRegistry;
 import dev.freakingrpg.core.FrpgCommand;
 import dev.freakingrpg.presentation.PresentationServices;
+import dev.freakingrpg.boss.astronomer.AstronomerArenaService;
 import dev.freakingrpg.vfx.VfxRunner;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,6 +17,7 @@ public final class FreakingRpgPlugin extends JavaPlugin {
     private BossManager bossManager;
     private VfxRunner vfxRunner;
     private PresentationServices presentation;
+    private AstronomerArenaService astronomerArenaService;
 
     @Override
     public void onEnable() {
@@ -23,6 +25,7 @@ public final class FreakingRpgPlugin extends JavaPlugin {
 
         vfxRunner = new VfxRunner(this);
         presentation = new PresentationServices(this);
+        astronomerArenaService = new AstronomerArenaService(this);
 
         BossRegistry registry = new BossRegistry();
         BossKeys keys = new BossKeys(this);
@@ -62,6 +65,10 @@ public final class FreakingRpgPlugin extends JavaPlugin {
 
     public PresentationServices presentation() {
         return presentation;
+    }
+
+    public AstronomerArenaService astronomerArenaService() {
+        return astronomerArenaService;
     }
 
     public Component brandedMessage(String message) {

@@ -15,9 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
 public final class BossManager {
+
+    private static final double MAX_ENTITY_HEALTH = 1024.0;
 
     private final FreakingRpgPlugin plugin;
     private final BossRegistry registry;
@@ -41,11 +44,39 @@ public final class BossManager {
     }
 
     public Optional<BossInstance> spawn(String bossId, Location location) {
-        return registry.find(bossId).map(definition -> spawn(definition, location));
+        return spawn(bossId, location, null);
+    }
+
+    public Optional<BossInstance> spawn(String bossId, Location location, Player spawner) {
+        Optional<BossDefinition> definition = registry.find(bossId);
+        if (definition.isEmpty()) {
+            return Optional.empty();
+        }
+
+        try {
+            Location spawnLocation = location;
+            if (AstronomerBoss.ID.equals(bossId) && spawner != null) {
+                spawnLocation = plugin.astronomerArenaService().prepareArena(spawner);
+            }
+            return Optional.of(spawn(definition.get(), spawnLocation));
+        } catch (Exception exception) {
+            plugin.getLogger().severe("Failed to spawn boss " + bossId + ": " + exception.getMessage());
+            exception.printStackTrace();
+            if (spawner != null) {
+                spawner.sendMessage(plugin.brandedMessage("Boss spawn failed: " + exception.getMessage()));
+            }
+            return Optional.empty();
+        }
     }
 
     public BossInstance spawn(BossDefinition definition, Location location) {
-        LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, definition.baseEntity());
+        double arenaRadius = definition.arenaRadius();
+        if (AstronomerBoss.ID.equals(definition.id())) {
+            arenaRadius = plugin.astronomerArenaService().arenaRadius();
+        }
+
+        Location entitySpawn = location.clone().add(0, 1, 0);
+        LivingEntity entity = (LivingEntity) entitySpawn.getWorld().spawnEntity(entitySpawn, definition.baseEntity());
         configureEntity(entity, definition);
 
         BossInstance instance = new BossInstance(
@@ -53,7 +84,7 @@ public final class BossManager {
             definition,
             entity,
             location,
-            definition.arenaRadius(),
+            arenaRadius,
             random
         );
 
@@ -62,7 +93,7 @@ public final class BossManager {
         instanceIdByEntity.put(entity.getUniqueId(), instance.id());
 
         if (AstronomerBoss.ID.equals(definition.id())) {
-            attachAstronomerEncounter(instance, location, definition.arenaRadius());
+            attachAstronomerEncounter(instance, location, arenaRadius);
         }
 
         instance.start();
@@ -78,13 +109,15 @@ public final class BossManager {
     }
 
     private void configureEntity(LivingEntity entity, BossDefinition definition) {
+        double maxHealth = Math.min(MAX_ENTITY_HEALTH, definition.maxHealth());
+
         entity.customName(definition.displayName());
         entity.setCustomNameVisible(true);
         entity.setAI(false);
         entity.setPersistent(true);
         entity.setRemoveWhenFarAway(false);
-        entity.getAttribute(Attribute.MAX_HEALTH).setBaseValue(definition.maxHealth());
-        entity.setHealth(definition.maxHealth());
+        entity.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
+        entity.setHealth(maxHealth);
         entity.getAttribute(Attribute.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         entity.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.0);
         if (AstronomerBoss.ID.equals(definition.id()) && entity.getAttribute(Attribute.SCALE) != null) {

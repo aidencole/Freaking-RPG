@@ -102,7 +102,9 @@ Celestial guardian encounter — arena-as-boss with rotating rings and gravity s
 /frpg boss spawn astronomer
 ```
 
-Fight in a **flat open area** (needs ~40 block radius). Phases:
+This **teleports you** to the void world `frpg_observatory` and builds a circular three-ring platform (quartz / deepslate / polished deepslate) with telescope props. You do **not** need a flat overworld spot — spawning *is* entering the arena.
+
+If spawn fails, check the server console; HP is capped at **1024** (Minecraft limit).
 
 | Phase | HP | What changes |
 |-------|-----|----------------|

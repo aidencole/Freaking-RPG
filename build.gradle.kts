@@ -35,10 +35,19 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.jar {
     archiveBaseName.set("FreakingRPG")
+    manifest {
+        attributes(
+            "Implementation-Title" to "FreakingRPG",
+            "Implementation-Version" to project.version
+        )
+    }
 }
 
 tasks {
     runServer {
         minecraftVersion(paperVersion)
+    }
+    named("runServer") {
+        dependsOn("build")
     }
 }

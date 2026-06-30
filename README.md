@@ -80,7 +80,7 @@ First run downloads Paper; later runs reuse the cached server in `run/`.
 
 The best place to start is the **boss combat framework** — telegraphed attacks, semi-predictable patterns, phase shifts, and punish windows during recovery (Mario / dragon-boss style).
 
-1. Start the dev server: `./gradlew runServer` (accept EULA in `run/eula.txt` if needed).
+1. Start the dev server: `./gradlew clean build runServer` (accept EULA in `run/eula.txt` if needed).
 2. Join the server, make yourself op: `/op YourName`
 3. Spawn the demo boss at your feet:
 

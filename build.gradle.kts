@@ -6,13 +6,15 @@ plugins {
 group = "dev.freakingrpg"
 version = "0.1.0-SNAPSHOT"
 
+val paperVersion: String by project
+
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    compileOnly("io.papermc.paper:paper-api:${paperVersion}.build.+")
 }
 
 java {
@@ -37,6 +39,6 @@ tasks.jar {
 
 tasks {
     runServer {
-        minecraftVersion("1.21.8")
+        minecraftVersion(paperVersion)
     }
 }

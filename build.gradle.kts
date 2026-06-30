@@ -1,5 +1,6 @@
 plugins {
     java
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = "dev.freakingrpg"
@@ -32,4 +33,10 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.jar {
     archiveBaseName.set("FreakingRPG")
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.21.8")
+    }
 }
